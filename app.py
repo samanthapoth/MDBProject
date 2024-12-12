@@ -1,17 +1,21 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import os
-from Neo4jRequest import Neo4jBloggerReq  # Import your Neo4j class
+from Neo4jRequest import Neo4jBloggerReq
 from MongoDBData import search_blog_posts
 from pymongo import MongoClient
 
 app = Flask(__name__)
 CORS(app)
 
-# Initialize Neo4j connection
-neo4j_client = Neo4jBloggerReq()
+try:
+    neo4j_client = Neo4jBloggerReq()
+    neo4j_available = True
+except Exception as e:
+    print(f"Warning: Neo4j connection failed: {str(e)}")
+    neo4j_available = False
 
-client = MongoClient("mongodb://localhost:27017")  # Update with your MongoDB URI
+client = MongoClient("mongodb://localhost:27017")
 db = client["blogs_database"] 
 collection = db["blog_posts"]
 
@@ -23,48 +27,82 @@ def home():
 def search():
     try:
         data = request.get_json()
-        print("Received request data:", data)  # Debug log
         search_type = data.get('search_type', '')
 
-        # Handle different search types
         if search_type == 'posts':
             search_text = data.get('search_text')
-            print("Searching for text:", search_text)  # Debug log
             if not search_text:
                 return jsonify({"success": False, "error": "Search text is required"}), 400
             
+            print(f"Searching for text: {search_text}")
             cursor_results = search_blog_posts(search_text)
-            print("Raw cursor results:", cursor_results)  # Debug log
+            
+            if cursor_results is None:
+                print("No cursor results returned")
+                return jsonify({
+                    "success": True,
+                    "data": ["No matching posts found"],
+                    "search_type": search_type
+                })
             
             results = []
-            
-            # Convert cursor to list first
             cursor_list = list(cursor_results)
-            print("Cursor as list:", cursor_list)  # Debug log
+            print(f"Found {len(cursor_list)} documents")
             
             for doc in cursor_list:
-                if 'posts' in doc:
-                    blogger_info = {
-                        'blogger_id': doc.get('blogger_id'),
-                        'gender': doc.get('gender'),
-                        'age': doc.get('age'),
-                        'industry': doc.get('industry'),
-                        'sign': doc.get('sign')
-                    }
+                if doc is None:
+                    print("Skipping None document")
+                    continue
                     
-                    for post in doc['posts']:
-                        if isinstance(post, dict) and 'content' in post:
-                            post_info = {
-                                'content': post['content'],
-                                'date': post.get('date'),
-                                'author': blogger_info
-                            }
-                            results.append(post_info)
+                blogger_info = {
+                    'blogger_id': doc.get('blogger_id'),
+                    'gender': doc.get('gender'),
+                    'age': doc.get('age'),
+                    'industry': doc.get('industry'),
+                    'sign': doc.get('sign')
+                }
+                
+                if not doc.get('posts'):
+                    print(f"No posts found for blogger {blogger_info['blogger_id']}")
+                    continue
+                    
+                for post in doc['posts']:
+                    if not isinstance(post, dict):
+                        print(f"Skipping invalid post format: {type(post)}")
+                        continue
+                        
+                    dates = post.get('date', [])
+                    contents = post.get('content', [])
+                    
+                    if not isinstance(contents, list):
+                        print(f"Content is not a list: {type(contents)}")
+                        continue
+                        
+                    for i, content in enumerate(contents):
+                        if not content:
+                            print(f"Skipping empty content at index {i}")
+                            continue
+                            
+                        try:
+                            if search_text.lower() in str(content).lower():
+                                if i < len(dates):
+                                    post_info = {
+                                        'content': str(content),
+                                        'date': dates[i],
+                                        'author': blogger_info
+                                    }
+                                    results.append(post_info)
+                        except Exception as e:
+                            print(f"Error processing content: {e}")
+                            continue
             
-            print("Final results:", results)  # Debug log
+            print(f"Found {len(results)} matching posts")
             
             if not results:
                 results = ["No matching posts found"]
+            
+        elif not neo4j_available:
+            return jsonify({"success": False, "error": "Neo4j features are currently unavailable"}), 503
             
         elif search_type == 'posts_by_gender':
             gender = data.get('gender')
@@ -87,19 +125,15 @@ def search():
         else:
             return jsonify({"success": False, "error": "Invalid search type"}), 400
 
-        response_data = {
+        return jsonify({
             "success": True, 
             "data": results,
             "search_type": search_type
-        }
-        print("Sending response:", response_data)  # Debug log
-        return jsonify(response_data)
+        })
 
-    except ValueError as ve:
-        print("ValueError:", str(ve))  # Debug log
-        return jsonify({"success": False, "error": "Invalid input: " + str(ve)}), 400
     except Exception as e:
-        print("Error in search route:", str(e))  # Debug log
+        print(f"Error in search route: {str(e)}")
+        print(f"Error occurred at line: {e.__traceback__.tb_lineno}")
         return jsonify({"success": False, "error": str(e)}), 500
 
 if __name__ == '__main__':
