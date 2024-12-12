@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Search Page{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Search</h1>
+    <div class="search-container">
+        <select id="searchType">
+            <option value="posts">Search Posts</option>
+            <option value="posts_by_gender">Search Posts by Gender</option>
+            <option value="posts_by_blogger">Search Posts by Blogger ID</option>
+            <option value="recommendations">Get Recommendations</option>
+        </select>
+        
+        <div id="textSearch" class="search-option" style="display:none;">
+            <input type="text" id="textInput" placeholder="Enter search text...">
+        </div>
+
+        <div id="genderSearch" class="search-option" style="display:none;">
+            <select id="genderInput">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
+
+        <div id="bloggerSearch" class="search-option" style="display:none;">
+            <input type="number" id="bloggerInput" placeholder="Enter Blogger ID">
+        </div>
+
+        <button onclick="performSearch()">Search</button>
+    </div>
+    <div id="results">
+        <!-- Search results will be displayed here -->
+    </div>
+</div>
+{% endblock %} 
