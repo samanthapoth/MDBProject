@@ -169,12 +169,12 @@ class Neo4jUploader:
                     session.execute_write(self._write_user_data, batch)
                     print(f"{i} out of {len(self.meta_data_)} meta data have been uploaded to Neo4j server\r", end='', flush=True)
                 
-                for i in range(0, len(self.content_data_), batch_size):
-                    batch = self.content_data_[i:i + batch_size]
-                    for k in batch:
-                        assert(len(k)==3)
-                    print(f"{i} out of {len(self.content_data_)} content data have been uploaded to Neo4j server\r", end='', flush=True)
-                    session.execute_write(self._write_content_data, batch)     
+                # for i in range(0, len(self.content_data_), batch_size):
+                #     batch = self.content_data_[i:i + batch_size]
+                #     for k in batch:
+                #         assert(len(k)==3)
+                #     print(f"{i} out of {len(self.content_data_)} content data have been uploaded to Neo4j server\r", end='', flush=True)
+                #     session.execute_write(self._write_content_data, batch)     
 
 
 if __name__ == '__main__':
