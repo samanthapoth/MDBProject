@@ -4,12 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        console.log('Base template loaded');
+        
+        // Add a global debug function
+        function debugLog(message, data) {
+            console.log('Debug:', message, data);
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #2d3748;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background-color: #2b6cb0;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .brand-logo {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+
+        .brand-logo:hover {
+            opacity: 0.9;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 768px) {
+            .nav-wrapper {
+                padding: 0 10px;
+            }
+
+            main {
+                margin: 1rem auto;
+                padding: 0 10px;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a202c;
+                color: #e2e8f0;
+            }
+
+            nav {
+                background-color: #2c5282;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        main {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .post-content {
+            color: #000000;
+            font-weight: 500;
+        }
+
+        .post-date {
+            color: #1a202c;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
     <nav>
         <div class="nav-wrapper">
-            <a href="/" class="brand-logo">Your App</a>
+            <a href="/" class="brand-logo">Blog Explorer</a>
+            <div class="nav-links">
+                <!-- Add more navigation links here if needed -->
+            </div>
         </div>
     </nav>
 
@@ -17,6 +118,19 @@
         {% block content %}{% endblock %}
     </main>
 
+    <footer style="text-align: center; padding: 20px; background-color: #f8fafc; margin-top: auto;">
+        <p style="color: #718096; margin: 0;">© 2024 Blog Explorer. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Enable console logging
+        if (typeof console === 'undefined') {
+            console = { log: function() {} };
+        }
+        
+        // Test console logging
+        console.log('Page fully loaded');
+    </script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html> 

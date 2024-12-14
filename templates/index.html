@@ -8,7 +8,6 @@
     <div class="search-container">
         <select id="searchType">
             <option value="posts">Search Posts</option>
-            <option value="posts_by_gender">Search Posts by Gender</option>
             <option value="posts_by_blogger">Search Posts by Blogger ID</option>
             <option value="recommendations">Get Recommendations</option>
         </select>
@@ -85,6 +84,7 @@ function showSearchOptions() {
 }
 
 async function performSearch() {
+    console.log("Starting search...");
     const searchType = document.getElementById('searchType').value;
     const resultsDiv = document.getElementById('results');
     
@@ -94,6 +94,7 @@ async function performSearch() {
 
     if (searchType === 'posts') {
         requestData.search_text = document.getElementById('textInput').value;
+        console.log("Search text:", requestData.search_text);
     } else if (searchType === 'posts_by_gender') {
         requestData.gender = document.getElementById('genderInput').value;
     } else if (searchType === 'posts_by_blogger' || searchType === 'recommendations') {
@@ -110,30 +111,56 @@ async function performSearch() {
         });
 
         const data = await response.json();
+        console.log("Received data:", data);
         
         if (data.success) {
             if (data.data && data.data.length > 0 && data.data[0] !== "No matching posts found") {
-                const resultsList = data.data.map((post, index) => `
-                    <div class="post-card">
-                        <div class="post-header">
-                            <div class="post-date">
-                                <strong>Date:</strong> ${post.date}
-                            </div>
-                            <div class="post-author">
-                                <div><strong>Blogger ID:</strong> ${post.author.blogger_id}</div>
-                                <div><strong>Demographics:</strong> 
-                                    ${post.author.gender}, 
-                                    ${post.author.age} years old, 
-                                    ${post.author.industry}, 
-                                    ${post.author.sign}
+                const resultsList = data.data.map((post, index) => {
+                    console.log("Processing post:", post);
+                    console.log("Original date:", post.date);
+                    
+                    let formattedDate = 'No date available';
+                    if (post.date) {
+                        try {
+                            const parts = post.date.replace(/,/g, ' ').split(' ').filter(part => part);
+                            console.log("Date parts:", parts);
+                            
+                            if (parts.length === 3) {
+                                const [day, month, year] = parts;
+                                formattedDate = `${month} ${day} ${year}`;
+                                console.log("Formatted date:", formattedDate);
+                            } else {
+                                formattedDate = post.date;
+                                console.log("Wrong number of parts:", parts.length);
+                            }
+                        } catch (e) {
+                            console.error("Date parsing error:", e);
+                            formattedDate = post.date;
+                        }
+                    }
+
+                    return `
+                        <div class="post-card">
+                            <div class="post-header">
+                                <div class="post-date">
+                                    <strong>Date:</strong> ${formattedDate}
+                                </div>
+                                <div class="post-author">
+                                    <div><strong>Blogger ID:</strong> ${post.author.blogger_id}</div>
+                                    <div><strong>Demographics:</strong> 
+                                        ${post.author.gender}, 
+                                        ${post.author.age} years old, 
+                                        ${post.author.industry}, 
+                                        ${post.author.sign}
+                                    </div>
                                 </div>
                             </div>
+                            <div class="post-content">
+                                ${post.content}
+                            </div>
                         </div>
-                        <div class="post-content">
-                            ${post.content}
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
                 resultsDiv.innerHTML = resultsList;
             } else {
                 resultsDiv.innerHTML = '<p>No results found</p>';
@@ -142,12 +169,14 @@ async function performSearch() {
             resultsDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
         }
     } catch (error) {
+        console.error("Search error:", error);
         resultsDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
     }
 }
 
 // Add event listener for search type changes
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("Page loaded");
     const searchTypeSelect = document.getElementById('searchType');
     searchTypeSelect.addEventListener('change', showSearchOptions);
     showSearchOptions(); // Initial setup

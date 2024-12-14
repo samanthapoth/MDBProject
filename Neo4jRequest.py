@@ -41,6 +41,19 @@ class Neo4jBloggerReq:
         print("Neo4j Connection established.")
 
     def Recommand(self, node_id, topK):
+        print("Input node_id type:", type(node_id))
+        print("Input node_id value:", node_id)
+        
+        records, summary, keys = self.driver_.execute_query("""
+                    match (n:Blogger{ID: $node_id}) 
+                    return id(n) as id""", 
+                    node_id = node_id)
+        
+        if len(records) == 0:
+            return []
+        for id in records:
+            node_id = id.data()['id']
+
         with self.gds_.graph.project(
             "node2vec", #  Graph name
             ['Age', 'Blogger', 'Gender', 'Industry', 'Sign'],
@@ -58,8 +71,22 @@ class Neo4jBloggerReq:
                 deltaThreshold=0.0,
                 sourceNodeFilter=node_id
             )
-            return res['node2'].to_list()
-            # print(res)
+            id_list = []
+            for node in res['node2']:
+                records, summary, keys = self.driver_.execute_query("""
+                    match (n:Blogger) 
+                    where id(n) = $node
+                    return n.ID""", 
+                    node = node)
+                for id in records:
+                    # print(id.data()['n.ID'])
+                    id_list.append(id.data()['n.ID'])
+
+            # for i in id_list:
+            #     print(i)
+
+            return id_list
+            #return res['node2'].to_list()
             # print(res['node2'].to_list())
             # print(res['node2'][2])
 
@@ -113,7 +140,7 @@ if __name__ == '__main__':
     #print(len(app.GetPostsByGender("male")))
     # print(app.GetBloggerSignByGender("female"))
     app = Neo4jBloggerReq()
-    print(app.Recommand(0, 1))
+    print(app.Recommand(3920839, 5))
 
 
         

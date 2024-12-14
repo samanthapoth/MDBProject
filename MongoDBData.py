@@ -75,13 +75,30 @@ def search_blog_posts(keyword):
         "posts": 1,
         "score": {"$meta": "textScore"}
     }
-    results = collection.find(query, projection).sort("score", {"$meta": "textScore"}).limit(1)
+    results = collection.find(query, projection).sort("score", {"$meta": "textScore"}).limit(3)
+    return results
+
+def get_posts_by_blogger_id(id):
+    id = str(id)
+    query = {"blogger_id": id}
+    projection = {
+        "blogger_id": 1,
+        "gender": 1,
+        "age": 1,
+        "industry": 1,
+        "sign": 1,
+        "posts": 1,
+    }
+    results = collection.find(query, projection)
     return results
 
 if __name__ == "__main__":
-    add_files()
-    search_keyword = ""  # Replace with the term you want to search
-    search_blog_posts(search_keyword)
+    #add_files()
+    # search_keyword = ""  # Replace with the term you want to search
+    # search_blog_posts(search_keyword)
+
+    a = get_posts_by_blogger_id("4162441")
+    print(a)
 
     # Close MongoDB connection
     client.close()

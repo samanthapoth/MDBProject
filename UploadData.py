@@ -112,7 +112,7 @@ class Neo4jUploader:
         # """
         query = """
             UNWIND $batch AS data
-            Create (b:Blogger {id: toInteger(data[0])})
+            Create (b:Blogger {ID: toInteger(data[0])})
             Merge (g:Gender {gender: data[1]})
             Merge (a:Age {age: toInteger(data[2])})
             Merge (i:Industry {industry: data[3]})
@@ -122,28 +122,28 @@ class Neo4jUploader:
         
         query = """
             UNWIND $batch AS data
-            Match (b:Blogger {id: toInteger(data[0])}), (g:Gender {gender: data[1]})
+            Match (b:Blogger {ID: toInteger(data[0])}), (g:Gender {gender: data[1]})
             Create (b)-[:has_gender]->(g);
         """
         tx.run(query, batch=batch)
         
         query = """
             UNWIND $batch AS data
-            Match (b:Blogger {id: toInteger(data[0])}), (a:Age {age: toInteger(data[2])})
+            Match (b:Blogger {ID: toInteger(data[0])}), (a:Age {age: toInteger(data[2])})
             Create (b)-[:has_age]->(a);
         """
         tx.run(query, batch=batch)
 
         query = """
             UNWIND $batch AS data
-            Match (b:Blogger {id: toInteger(data[0])}), (i:Industry {industry: data[3]})
+            Match (b:Blogger {ID: toInteger(data[0])}), (i:Industry {industry: data[3]})
             Create (b)-[:has_industry]->(i);
         """
         tx.run(query, batch=batch)
 
         query = """
             UNWIND $batch AS data
-            Match (b:Blogger {id: toInteger(data[0])}), (s:Sign {sign: data[4]})
+            Match (b:Blogger {ID: toInteger(data[0])}), (s:Sign {sign: data[4]})
             Create (b)-[:has_sign]->(s);
         """
         tx.run(query, batch=batch)
@@ -152,7 +152,7 @@ class Neo4jUploader:
     def _write_content_data(self, tx, batch):
         query = """
             UNWIND $batch AS data
-            MERGE (b:Blogger {id: toInteger(data[0])}) WITH b, data
+            MERGE (b:Blogger {ID: toInteger(data[0])}) WITH b, data
             Create (p:Post {text: data[2], time: data[1]}) WITH b, p, data
             Create (b)-[:POST]->(p)
         """
