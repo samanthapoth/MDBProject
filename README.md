@@ -27,7 +27,12 @@ Create ad Neo4j project. Install the Graph Data Science library and run the proj
 ### 3. Create a MongoDB database 
 Create a MongoDB database on your local host called 'blogs_database'. Make sure the host is on port 27017 or change line 7 in ```MongoDBData.py```.
 
-### 4. Upload the data
+### 4. Download then upload the data
+Download the blogs data from this link:
+[Blogs Data](https://iowa-my.sharepoint.com/:f:/g/personal/spothitakis_uiowa_edu/ElLNFf8U2e5HsJw8LzzSCl4BVVOPnxouv_bFN41z_Q2llQ?e=agwV6T)
+
+Open the zip file and save the folder of blogs in the project directory as 'blogs'.
+
 To load both databases with the blogs data, run the following:
 
 ```
