@@ -6,6 +6,7 @@ import csv
 from xml.parsers.expat import ExpatError
 from neo4j import GraphDatabase
 
+projectName = "MDBProject"
 
 class XMLReader:
     def __init__(self, path, default_num_post = -1):
@@ -99,7 +100,7 @@ class Neo4jUploader:
         # self.URI = os.getenv("NEO4J_URI")
         # self.AUTH = (os.getenv("NEO4J_USERNAME"), os.getenv("NEO4J_PASSWORD"))
         self.URI = "neo4j://localhost"
-        self.AUTH = ("neo4j", "MDBProject")
+        self.AUTH = ("neo4j", projectName)
         self.meta_data_ = uploader.meta_data()
         self.content_data_ = uploader.content_data()
         self.Upload()
