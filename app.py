@@ -84,13 +84,26 @@ def search():
                             continue
                             
                         try:
-                            if i < len(dates):
-                                post_info = {
-                                    'content': str(content),
-                                    'date': dates[i],
-                                    'author': blogger_info
-                                }
-                                results.append(post_info)
+                            if search_type == 'posts':
+                                # Split search text into words and check if any word matches
+                                search_words = search_text.lower().split()
+                                if any(word in str(content).lower() for word in search_words):
+                                    if i < len(dates):
+                                        post_info = {
+                                            'content': str(content),
+                                            'date': dates[i],
+                                            'author': blogger_info
+                                        }
+                                        results.append(post_info)
+                            else:
+                                # For other search types (like posts_by_blogger), include all posts
+                                if i < len(dates):
+                                    post_info = {
+                                        'content': str(content),
+                                        'date': dates[i],
+                                        'author': blogger_info
+                                    }
+                                    results.append(post_info)
                         except Exception as e:
                             print(f"Error processing content: {e}")
                             continue
