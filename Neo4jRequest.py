@@ -6,7 +6,7 @@ from neo4j import GraphDatabase
 from graphdatascience import GraphDataScience
 
 username = "neo4j"
-password = "password"
+password = "password1"
 class Neo4jBloggerReq:
     # def _QueryBloogers(self, tx, key, val, res_key):
     #     # query = f"MATCH (b:Blogger {{id}: val}) RETURN b"

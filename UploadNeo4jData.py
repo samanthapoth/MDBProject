@@ -6,7 +6,7 @@ import csv
 from xml.parsers.expat import ExpatError
 from neo4j import GraphDatabase
 
-password = "password"
+password = "password1"
 username = "neo4j"
 
 class XMLReader:
