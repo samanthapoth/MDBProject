@@ -7,6 +7,7 @@ from xml.parsers.expat import ExpatError
 from neo4j import GraphDatabase
 
 password = "password"
+username = "neo4j"
 
 class XMLReader:
     def __init__(self, path, default_num_post = -1):
@@ -100,7 +101,7 @@ class Neo4jUploader:
         # self.URI = os.getenv("NEO4J_URI")
         # self.AUTH = (os.getenv("NEO4J_USERNAME"), os.getenv("NEO4J_PASSWORD"))
         self.URI = "neo4j://localhost"
-        self.AUTH = ("neo4j", password)
+        self.AUTH = (username, password)
         self.meta_data_ = uploader.meta_data()
         self.content_data_ = uploader.content_data()
         self.Upload()

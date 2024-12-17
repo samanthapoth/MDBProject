@@ -5,6 +5,7 @@ import dotenv
 from neo4j import GraphDatabase
 from graphdatascience import GraphDataScience
 
+username = "neo4j"
 password = "password"
 class Neo4jBloggerReq:
     # def _QueryBloogers(self, tx, key, val, res_key):
@@ -28,12 +29,12 @@ class Neo4jBloggerReq:
             if dotenv.load_dotenv(key_file) is False:
                 raise RuntimeError('Environment variables not loaded.')
             self.URI = "neo4j://localhost"
-            self.AUTH = ("neo4j", password)
+            self.AUTH = (username, password)
             # self.URI = os.getenv("NEO4J_URI")
             # self.AUTH = (os.getenv("NEO4J_USERNAME"), os.getenv("NEO4J_PASSWORD"))
         else:
             self.URI = "neo4j://localhost"
-            self.AUTH = ("neo4j", password)
+            self.AUTH = (username, password)
         self.driver_ =  GraphDatabase.driver(self.URI, auth=self.AUTH) 
         self.driver_.verify_connectivity()
         
