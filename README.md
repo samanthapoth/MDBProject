@@ -22,10 +22,10 @@ pip install -r requirements.txt
 ```
 
 ### 2. Create a Neo4j project
-Create ad Neo4j project. Install the Graph Data Science library and run the project. Update the name you set for the project in the ```UploadNeo4jData.py``` file on line 9 and the ```Neo4jRequest.py``` file on line 8.
+Create a Neo4j project and with a remote connection. Install the Graph Data Science library and run the project. Update the password you set for the project in the ```UploadNeo4jData.py``` file on line 9 and the ```Neo4jRequest.py``` file on line 8.
 
 ### 3. Create a MongoDB database 
-Create a MongoDB database on your local host called 'blogs_database'. Make sure the host is on port 27017 or change line 7 in ```MongoDBData.py```.
+Create a MongoDB database on your local host called 'blogs_database' and a collection in it called 'blog_posts'. If wanting a different db name or collection, change lines 8 and 9 in ```MongoDBData.py```. Make sure the host is on port 27017 or change line 7 in ```MongoDBData.py```.
 
 ### 4. Download then upload the data
 Download the blogs data from this link:

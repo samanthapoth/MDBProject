@@ -1,6 +1,6 @@
 # Wait 60 seconds before connecting using these details, or login to https://console.neo4j.io to validate the Aura Instance is available
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USERNAME=neo4j
-NEO4J_PASSWORD=MDBProject
+NEO4J_PASSWORD=notused
 AURA_INSTANCEID=828584e9
 AURA_INSTANCENAME=Instance01

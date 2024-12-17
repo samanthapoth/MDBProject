@@ -93,12 +93,12 @@ def get_posts_by_blogger_id(id):
     return results
 
 if __name__ == "__main__":
-    #add_files()
+    add_files()
     # search_keyword = ""  # Replace with the term you want to search
     # search_blog_posts(search_keyword)
 
-    a = get_posts_by_blogger_id("4162441")
-    print(a)
+    # a = get_posts_by_blogger_id("4162441")
+    # print(a)
 
     # Close MongoDB connection
     client.close()
